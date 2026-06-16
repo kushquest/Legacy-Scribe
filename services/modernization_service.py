@@ -3,7 +3,7 @@ import asyncio
 import json
 from google import genai
 from google.auth import default
-from google.oauth2 import service_account
+from google.oauth2 import service_account, credentials as auth_credentials
 import streamlit as st
 from core.config import Config
 from models.schemas import CodeAnalysis
@@ -16,10 +16,13 @@ class ModernizationService:
         # Try loading credentials from Streamlit secrets (for deployment)
         if "gcp_service_account" in st.secrets:
             try:
-                credentials = service_account.Credentials.from_service_account_info(
-                    dict(st.secrets["gcp_service_account"])
-                )
-                project = st.secrets["gcp_service_account"].get("project_id")
+                secret_dict = dict(st.secrets["gcp_service_account"])
+                if secret_dict.get("type") == "authorized_user":
+                    credentials = auth_credentials.Credentials.from_authorized_user_info(secret_dict)
+                    project = secret_dict.get("quota_project_id")
+                else:
+                    credentials = service_account.Credentials.from_service_account_info(secret_dict)
+                    project = secret_dict.get("project_id")
             except Exception as e:
                 print(f"⚠️ Failed to load credentials from Streamlit secrets: {e}")
 
