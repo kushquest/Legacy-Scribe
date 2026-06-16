@@ -68,6 +68,22 @@ if "orchestrator" not in st.session_state:
         st.error(f"Failed to initialize Orchestrator: {e}")
         st.stop()
 
+# --- RATE LIMITING & ABUSE PREVENTION ---
+MAX_QUERIES_PER_SESSION = 3
+GLOBAL_QUERIES_PER_HOUR = 30
+
+@st.cache_resource
+def get_global_rate_limiter():
+    return {"count": 0, "reset_time": time.time() + 3600}
+
+global_usage = get_global_rate_limiter()
+if time.time() > global_usage["reset_time"]:
+    global_usage["count"] = 0
+    global_usage["reset_time"] = time.time() + 3600
+
+if "session_queries" not in st.session_state:
+    st.session_state.session_queries = 0
+
 # --- SIDEBAR ---
 # Removed per user request
 
@@ -132,7 +148,14 @@ TIME=10.05.01  SEQ=00045  CPU=0000  ASID=002B''', language="text")
     code_input = st.text_area("Paste Code / Logs here:", height=400, placeholder="IDENTIFICATION DIVISION. ...", key="code_input")
     
     if st.button("Initiate Modernization Pipeline", type="primary"):
-        if code_input:
+        if global_usage["count"] >= GLOBAL_QUERIES_PER_HOUR:
+            st.error("🛑 **Global Capacity Reached:** The application is currently receiving too many requests. Please try again later to prevent abuse.")
+        elif st.session_state.session_queries >= MAX_QUERIES_PER_SESSION:
+            st.error(f"🛑 **Session Limit Reached:** To prevent abuse, each user session is limited to {MAX_QUERIES_PER_SESSION} queries. Thank you for testing Legacy Scribe!")
+        elif code_input:
+            # Increment counts to track usage
+            st.session_state.session_queries += 1
+            global_usage["count"] += 1
             with col_output:
                 console = st.empty()
                 async def run_pipeline():
