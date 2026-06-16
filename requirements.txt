@@ -1,0 +1,13 @@
+streamlit
+google-genai
+google-auth
+instructor
+pydantic
+python-dotenv
+aiohttp
+pandas
+plotly
+pillow
+pymupdf4llm
+tenacity
+rich
