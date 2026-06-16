@@ -239,6 +239,6 @@ with col_output:
 
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: #888; margin-top: 2rem;'><small>Built by <b>Kushagra</b> | Agentic AI Summit 2026 | Powered by Google Vertex AI & Gemini 2.5</small></div>", 
+    "<div style='text-align: center; color: #888; margin-top: 2rem;'><small>Built by <b>Kushagra Shiromani</b> | Agentic AI Summit 2026 | Powered by Google Vertex AI & Gemini 2.5</small></div>", 
     unsafe_allow_html=True
 )
