@@ -3,15 +3,35 @@ import asyncio
 import json
 from google import genai
 from google.auth import default
+from google.oauth2 import service_account
+import streamlit as st
 from core.config import Config
 from models.schemas import CodeAnalysis
 
 class ModernizationService:
     def __init__(self):
-        credentials, project = default()
+        credentials = None
+        project = None
+
+        # Try loading credentials from Streamlit secrets (for deployment)
+        if "gcp_service_account" in st.secrets:
+            try:
+                credentials = service_account.Credentials.from_service_account_info(
+                    dict(st.secrets["gcp_service_account"])
+                )
+                project = st.secrets["gcp_service_account"].get("project_id")
+            except Exception as e:
+                print(f"⚠️ Failed to load credentials from Streamlit secrets: {e}")
+
+        # Fallback to local Application Default Credentials (ADC)
+        if not credentials:
+            credentials, project = default()
+
+        gcp_project = Config.GOOGLE_CLOUD_PROJECT or project
+
         self.client = genai.Client(
             vertexai=True,
-            project=Config.GOOGLE_CLOUD_PROJECT,
+            project=gcp_project,
             location=Config.GOOGLE_CLOUD_LOCATION,
             credentials=credentials
         )
