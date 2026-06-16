@@ -69,40 +69,74 @@ if "orchestrator" not in st.session_state:
         st.stop()
 
 # --- SIDEBAR ---
-with st.sidebar:
-    st.markdown("## 🚀 Legacy Scribe")
-    st.markdown("### Control Panel")
-    
-    # Dynamic Model Selection
-    available_models = Config.get_available_gemini_models()
-    selected_model = st.selectbox(
-        "Select Model Engine", 
-        available_models, 
-        index=available_models.index("gemini-1.5-flash") if "gemini-1.5-flash" in available_models else 0,
-        help="Select the Gemini model for analysis. Default is Gemini 1.5 Flash."
-    )
-    
-    st.info(f"System: Vertex AI (ADC Enabled)")
-    st.markdown("---")
-    st.write("Legacy Scribe Agent v2.0")
+# Removed per user request
 
 # --- UI LOGIC ---
 st.markdown("<h1 class='main-header'>Legacy Scribe</h1>", unsafe_allow_html=True)
-st.markdown("<p class='sub-header'>1a. Upgrading large-scale legacy systems into intelligent, scalable, future-ready platforms.</p>", unsafe_allow_html=True)
+st.markdown("<p class='sub-header'>Upgrading large-scale legacy systems into intelligent, scalable, future-ready platforms.</p>", unsafe_allow_html=True)
 
 col_input, col_output = st.columns([1, 1.5])
 
 with col_input:
     st.markdown("### Legacy Asset Input")
+    
+    with st.expander("💡 View Copy-Paste Examples"):
+        st.markdown("**1. COBOL Source**")
+        st.code('''IDENTIFICATION DIVISION.
+PROGRAM-ID. CALC-TAX.
+DATA DIVISION.
+WORKING-STORAGE SECTION.
+01  WS-SALARY   PIC 9(5)V99.
+01  WS-TAX      PIC 9(5)V99.
+PROCEDURE DIVISION.
+    COMPUTE WS-TAX = WS-SALARY * 0.15.
+    DISPLAY "TAX IS: " WS-TAX.
+    STOP RUN.''', language="cobol")
+        
+        st.markdown("**2. PL/I Module**")
+        st.code('''FETCH_DATA: PROC OPTIONS(MAIN);
+  DCL CUST_ID CHAR(5);
+  DCL CUST_NAME CHAR(30);
+  EXEC SQL SELECT NAME INTO :CUST_NAME FROM CUSTOMERS WHERE ID = :CUST_ID;
+  PUT SKIP LIST('Customer: ', CUST_NAME);
+END FETCH_DATA;''', language="pli")
+        
+        st.markdown("**3. JCL Script**")
+        st.code('''//BACKUP JOB (123),'SYS BACKUP',CLASS=A,MSGCLASS=X
+//STEP1    EXEC PGM=IEBGENER
+//SYSPRINT DD  SYSOUT=*
+//SYSUT1   DD  DSN=PROD.DATA.MASTER,DISP=SHR
+//SYSUT2   DD  DSN=BACKUP.DATA.MASTER,DISP=(NEW,CATLG,DELETE),
+//             SPACE=(CYL,(50,10),RLSE),UNIT=SYSDA
+//SYSIN    DD  DUMMY''', language="jcl")
+
+        st.markdown("**4. Legacy SQL Schema**")
+        st.code('''CREATE TABLE EMP_MAST (
+  EMP_NO NUMBER(4) PRIMARY KEY,
+  ENAME VARCHAR2(10),
+  JOB VARCHAR2(9),
+  MGR NUMBER(4),
+  HIREDATE DATE,
+  SAL NUMBER(7,2),
+  COMM NUMBER(7,2),
+  DEPTNO NUMBER(2)
+);''', language="sql")
+
+        st.markdown("**5. Mainframe Logs**")
+        st.code('''+DFHAP0001 2026-06-16 10:00:00 CICSHTK1 An abend (code 0C4) has occurred at offset X'000A42' in module PROG7B.
+IEA995I SYMPTOM DUMP OUTPUT
+USER COMPLETION CODE=4038 REASON CODE=00000001
+TIME=10.05.01  SEQ=00045  CPU=0000  ASID=002B''', language="text")
+
     legacy_type = st.selectbox("Asset Type", ["COBOL Source", "PL/I Module", "JCL Script", "Legacy SQL Schema", "Mainframe Logs"])
-    code_input = st.text_area("Paste Code / Logs here:", height=500, placeholder="IDENTIFICATION DIVISION. ...", key="code_input")
+    code_input = st.text_area("Paste Code / Logs here:", height=400, placeholder="IDENTIFICATION DIVISION. ...", key="code_input")
     
     if st.button("Initiate Modernization Pipeline", type="primary"):
         if code_input:
             with col_output:
                 console = st.empty()
                 async def run_pipeline():
-                    async for step in st.session_state.orchestrator.run_modernization(code_input, selected_model):
+                    async for step in st.session_state.orchestrator.run_modernization(code_input):
                         if isinstance(step, str):
                             console.markdown(f"<div class='thinking-console'>[SCRIBE]: {step}</div>", unsafe_allow_html=True)
                         else:

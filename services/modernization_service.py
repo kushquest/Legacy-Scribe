@@ -39,8 +39,19 @@ class ModernizationService:
     async def analyze_legacy_code(self, code: str, model_name: str = Config.DEFAULT_MODEL):
         yield "Initializing Legacy Scribe..."
         await asyncio.sleep(0.5)
-        yield f"Using Engine: {model_name}..."
-        await asyncio.sleep(0.5)
+        
+        # --- PROMPT INJECTION PROTECTION ---
+        # Basic heuristic to reject common injection phrases
+        lower_code = code.lower()
+        injection_patterns = [
+            "ignore previous instructions", "disregard all previous",
+            "you are now", "system instruction:", "new instruction:",
+            "forget everything", "override prompt"
+        ]
+        if any(pattern in lower_code for pattern in injection_patterns):
+            yield "ERROR_SECURITY_VIOLATION: Potential prompt injection detected. Request blocked."
+            return
+
         yield "Deconstructing legacy syntax and state machine..."
         
         try:

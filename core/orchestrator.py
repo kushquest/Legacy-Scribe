@@ -4,6 +4,6 @@ class ModernizationOrchestrator:
     def __init__(self):
         self.service = ModernizationService()
 
-    async def run_modernization(self, code: str, model_name: str):
-        async for step in self.service.analyze_legacy_code(code, model_name):
+    async def run_modernization(self, code: str):
+        async for step in self.service.analyze_legacy_code(code):
             yield step
