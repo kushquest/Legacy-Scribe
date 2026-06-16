@@ -163,6 +163,9 @@ TIME=10.05.01  SEQ=00045  CPU=0000  ASID=002B''', language="text")
                 async def run_pipeline():
                     async for step in st.session_state.orchestrator.run_modernization(code_input):
                         if isinstance(step, str):
+                            if step.startswith("ERROR_"):
+                                st.error(f"**System Error:** {step.replace('ERROR_', '')}")
+                                break
                             console.markdown(f"<div class='thinking-console'>[SCRIBE]: {step}</div>", unsafe_allow_html=True)
                         else:
                             st.success("Modernization Strategy Generated")
@@ -233,3 +236,9 @@ with col_output:
             <p style='color: #525252; margin-top: 0.5rem;'>Input legacy assets to trigger neural deconstruction and future-state mapping.</p>
         </div>
         """, unsafe_allow_html=True)
+
+st.markdown("---")
+st.markdown(
+    "<div style='text-align: center; color: #888; margin-top: 2rem;'><small>Built by <b>Kushagra</b> | Agentic AI Summit 2026 | Powered by Google Vertex AI & Gemini 2.5</small></div>", 
+    unsafe_allow_html=True
+)
