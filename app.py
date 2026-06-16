@@ -145,13 +145,15 @@ USER COMPLETION CODE=4038 REASON CODE=00000001
 TIME=10.05.01  SEQ=00045  CPU=0000  ASID=002B''', language="text")
 
     legacy_type = st.selectbox("Asset Type", ["COBOL Source", "PL/I Module", "JCL Script", "Legacy SQL Schema", "Mainframe Logs"])
-    code_input = st.text_area("Paste Code / Logs here:", height=400, placeholder="IDENTIFICATION DIVISION. ...", key="code_input")
+    code_input = st.text_area("Paste Code / Logs here:", height=400, placeholder="IDENTIFICATION DIVISION. ...", key="code_input", max_chars=10000)
     
     if st.button("Initiate Modernization Pipeline", type="primary"):
         if global_usage["count"] >= GLOBAL_QUERIES_PER_HOUR:
             st.error("🛑 **Global Capacity Reached:** The application is currently receiving too many requests. Please try again later to prevent abuse.")
         elif st.session_state.session_queries >= MAX_QUERIES_PER_SESSION:
             st.error(f"🛑 **Session Limit Reached:** To prevent abuse, each user session is limited to {MAX_QUERIES_PER_SESSION} queries. Thank you for testing Legacy Scribe!")
+        elif code_input and len(code_input) > 10000:
+            st.error("🛑 **Input too large:** Please limit your legacy code or logs to 10,000 characters to prevent abuse.")
         elif code_input:
             # Increment counts to track usage
             st.session_state.session_queries += 1
