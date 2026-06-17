@@ -23,15 +23,21 @@ st.markdown("""
         font-family: 'IBM Plex Sans', sans-serif;
     }
 
-    /* Main Branding */
+    /* Main Branding - Light Theme Default */
     .main-header { 
         text-align: left; 
-        color: #0062ff;
+        color: #0f62fe; /* IBM Blue 60 */
         font-size: 3.5rem; 
         font-weight: 700; 
         margin-bottom: 0rem; 
     }
-    .sub-header { color: #525252; font-size: 1.2rem; margin-bottom: 2rem; border-bottom: 2px solid #0062ff; padding-bottom: 10px; }
+    .sub-header { 
+        color: #525252; 
+        font-size: 1.2rem; 
+        margin-bottom: 2rem; 
+        border-bottom: 2px solid #0f62fe; 
+        padding-bottom: 10px; 
+    }
     
     /* Metrics & Cards */
     .metric-card {
@@ -39,11 +45,12 @@ st.markdown("""
         padding: 1.5rem;
         border-radius: 4px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        border-top: 4px solid #0062ff;
+        border-top: 4px solid #0f62fe;
         margin-bottom: 1rem;
     }
     .metric-title { color: #161616; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; }
-    .metric-value { color: #0062ff; font-size: 1.8rem; font-weight: 700; }
+    .metric-value { color: #0f62fe; font-size: 1.8rem; font-weight: 700; }
+    .metric-desc { color: #525252; margin-top: 0.5rem; margin-bottom: 0rem; }
 
     /* Modernization Console */
     .thinking-console {
@@ -54,8 +61,46 @@ st.markdown("""
         font-family: 'IBM Plex Mono', monospace;
         font-size: 0.9rem;
         margin: 1rem 0;
-        border-left: 6px solid #0062ff;
+        border-left: 6px solid #0f62fe;
         box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    /* Footer */
+    .footer {
+        text-align: center;
+        color: #6f6f6f;
+        margin-top: 2rem;
+    }
+
+    /* Dark Theme Adaptive Overrides */
+    @media (prefers-color-scheme: dark) {
+        .main-header { 
+            color: #78a9ff; /* IBM Blue 30 */
+        }
+        .sub-header { 
+            color: #c6c6c6; 
+            border-bottom: 2px solid #78a9ff; 
+        }
+        .metric-card {
+            background: #1c1c1c; /* IBM Gray 90 */
+            border-top: 4px solid #78a9ff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .metric-title { 
+            color: #e0e0e0; 
+        }
+        .metric-value { 
+            color: #78a9ff; 
+        }
+        .metric-desc { 
+            color: #a8a8a8; 
+        }
+        .thinking-console {
+            border-left: 6px solid #78a9ff;
+        }
+        .footer {
+            color: #a8a8a8;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -233,12 +278,12 @@ with col_output:
         <div class='metric-card'>
             <div class='metric-title'>System Readiness</div>
             <div class='metric-value'>AWAITING INPUT</div>
-            <p style='color: #525252; margin-top: 0.5rem;'>Input legacy assets to trigger neural deconstruction and future-state mapping.</p>
+            <p class='metric-desc'>Input legacy assets to trigger neural deconstruction and future-state mapping.</p>
         </div>
         """, unsafe_allow_html=True)
 
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: #888; margin-top: 2rem;'><small>Built by <b>Kushagra Shiromani</b> | Agentic AI Summit 2026 | Powered by Google Vertex AI & Gemini 2.5</small></div>", 
+    "<div class='footer'><small>Built by <b>Kushagra Shiromani</b> | Agentic AI Summit 2026 | Powered by Google Vertex AI & Gemini 2.5</small></div>", 
     unsafe_allow_html=True
 )
